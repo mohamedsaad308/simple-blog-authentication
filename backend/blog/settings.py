@@ -67,7 +67,9 @@ INTERNAL_IPS = [
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
-    "http://127.0.0.1:3000"
+    "http://127.0.0.1:3000",
+    "http://localhost:8001",
+    "http://127.0.0.1:8001",
 ]
 
 ROOT_URLCONF = "blog.urls"
@@ -96,11 +98,14 @@ WSGI_APPLICATION = "blog.wsgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+        "ENGINE": "django.db.backends.mysql",
+        "NAME": config("MYSQL_DATABASE", default="blog"),
+        "USER": config("MYSQL_USER", default="mysql"),
+        "PASSWORD": config("MYSQL_PASSWORD"),
+        "HOST": config("MYSQL_DB_HOST", default="db"),
+        "PORT": config("MYSQL_DB_PORT", default="3306"),
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
@@ -164,10 +169,6 @@ SITE_NAME = "localhost:3000"
 
 
 DJOSER = {
-    "SERIALIZERS": {
-        "user_create": "core.serializers.UserCreateSerializer",
-        "current_user": "core.serializers.UserSerializer",
-    },
     "LOGIN_FIELD": "email",
     "PASSWORD_RESET_CONFIRM_URL": "/password/reset/confirm/{uid}/{token}",
     "ACTIVATION_URL": "/activate/{uid}/{token}",
@@ -181,15 +182,15 @@ DJOSER = {
 
 
 # Celery Configuration
-CELERY_BROKER_URL = "redis://localhost:6379/1"
+CELERY_BROKER_URL = config("REDIS_URL", default="redis://redis:6379/0")
 
 # Email Configuration
 EMAIL_BACKEND = (
     "djcelery_email.backends.CeleryEmailBackend"  # handle emails globally by celery
 )
-EMAIL_HOST = config("EMAIL_HOST", default="")
-EMAIL_PORT = config("EMAIL_PORT", default="", cast=int)
-EMAIL_HOST_USER = config("EMAIL_HOST_USER", default="")
-EMAIL_HOST_PASSWORD = config("EMAIL_HOST_PASSWORD", default="")
+EMAIL_HOST = "smtp4dev"
+EMAIL_PORT = 2525
+EMAIL_HOST_USER = ""
+EMAIL_HOST_PASSWORD = ""
 EMAIL_USE_TLS = config("EMAIL_USE_TLS", default=True, cast=bool)
 DEFAULT_FROM_EMAIL = "mohamed@blog.com"

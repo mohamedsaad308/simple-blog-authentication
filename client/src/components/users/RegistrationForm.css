@@ -1,0 +1,20 @@
+/* RegistrationForm.css */
+#registration-container {
+  width: 60%;
+  margin: 0 auto;
+  margin-top: 50px;
+}
+
+#registration-alert {
+  margin-top: 20px;
+}
+
+#registration-form {
+  margin-top: 20px;
+}
+
+@media (max-width: 768px) {
+  #registration-container {
+    width: 80%;
+  }
+}

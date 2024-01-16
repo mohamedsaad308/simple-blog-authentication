@@ -1,0 +1,71 @@
+version: "3"
+
+networks:
+  default:
+    external:
+      name: blog-network
+
+services:
+  db:
+    image: mysql:8.0
+    env_file:
+      - .env
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysqldata:/var/lib/mysql
+
+  api:
+    &api
+    build:
+      context: ./backend 
+    command: ["sh", "/app/docker-entrypoint.sh"]
+    env_file:
+      - .env
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+      - redis
+    restart: on-failure
+    volumes:
+      - ./backend:/app
+
+  celeryworker:
+    <<: *api
+    build:
+      context: ./backend
+    command: celery -A blog worker --loglevel=info
+    ports:
+      - "8001:8000" 
+    environment:
+      - CELERY=true
+    volumes:
+      - ./backend:/app
+
+  redis:
+    image: redis:6.2-alpine
+
+  frontend:
+    platform: linux/amd64
+    build:
+      context: client
+    volumes:
+      - ./frontend:/home/blog
+      - /home/blog/node_modules
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env
+
+  smtp4dev:
+    image: rnwood/smtp4dev:v3
+    ports:
+      - 5000:80
+      - 25:25
+    restart: always
+
+volumes:
+  mysqldata:
+  pgdata:
+  redisdata:
