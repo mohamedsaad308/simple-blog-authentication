@@ -44,7 +44,7 @@ INSTALLED_APPS = [
     "djoser",
     "debug_toolbar",
     "core",
-    "djcelery_email",
+    "post_office",
 ]
 
 MIDDLEWARE = [
@@ -100,9 +100,9 @@ DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.mysql",
         "NAME": config("MYSQL_DATABASE", default="blog"),
-        "USER": config("MYSQL_USER", default="mysql"),
-        "PASSWORD": config("MYSQL_PASSWORD"),
-        "HOST": config("MYSQL_DB_HOST", default="db"),
+        "USER": config("MYSQL_USER", default="mohamed"),
+        "PASSWORD": config("MYSQL_PASSWORD", "mysql"),
+        "HOST": config("MYSQL_DB_HOST", default="127.0.0.1"),
         "PORT": config("MYSQL_DB_PORT", default="3306"),
     }
 }
@@ -185,9 +185,13 @@ DJOSER = {
 CELERY_BROKER_URL = config("REDIS_URL", default="redis://redis:6379/0")
 
 # Email Configuration
-EMAIL_BACKEND = (
-    "djcelery_email.backends.CeleryEmailBackend"  # handle emails globally by celery
-)
+EMAIL_BACKEND = "post_office.EmailBackend"
+
+# Put this in settings.py
+POST_OFFICE = {
+    'CELERY_ENABLED': True,
+}
+
 EMAIL_HOST = "smtp4dev"
 EMAIL_PORT = 2525
 EMAIL_HOST_USER = ""
