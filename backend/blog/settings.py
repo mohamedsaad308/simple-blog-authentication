@@ -170,8 +170,8 @@ SITE_NAME = "localhost:3000"
 
 DJOSER = {
     "LOGIN_FIELD": "email",
-    "PASSWORD_RESET_CONFIRM_URL": "/password/reset/confirm/{uid}/{token}",
-    "ACTIVATION_URL": "/activate/{uid}/{token}",
+    "PASSWORD_RESET_CONFIRM_URL": "password/reset/confirm/{uid}/{token}",
+    "ACTIVATION_URL": "activate/{uid}/{token}",
     "USER_CREATE_PASSWORD_RETYPE": True,
     "SEND_ACTIVATION_EMAIL": True,
     "SEND_CONFIRMATION_EMAIL": True,
@@ -182,19 +182,19 @@ DJOSER = {
 
 
 # Celery Configuration
-CELERY_BROKER_URL = config("REDIS_URL", default="redis://redis:6379/0")
+CELERY_BROKER_URL = config("REDIS_URL", default="redis://127.0.0.1:6379/0")
 
 # Email Configuration
 EMAIL_BACKEND = "post_office.EmailBackend"
 
 # Put this in settings.py
 POST_OFFICE = {
-    'CELERY_ENABLED': True,
+    "CELERY_ENABLED": True,
 }
-
-EMAIL_HOST = "smtp4dev"
-EMAIL_PORT = 2525
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = config("EMAIL_HOST", default="172.23.0.2")
+EMAIL_PORT = 25
 EMAIL_HOST_USER = ""
 EMAIL_HOST_PASSWORD = ""
-EMAIL_USE_TLS = config("EMAIL_USE_TLS", default=True, cast=bool)
-DEFAULT_FROM_EMAIL = "mohamed@blog.com"
+# EMAIL_USE_TLS = config("EMAIL_USE_TLS", default=True, cast=bool)
+# DEFAULT_FROM_EMAIL = "mohamed@blog.com"
