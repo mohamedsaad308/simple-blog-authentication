@@ -1,6 +1,6 @@
 FROM node:16.20.2-slim
 
-WORKDIR /home/fairstock
+WORKDIR /home/blog
 
 COPY yarn.lock ./
 

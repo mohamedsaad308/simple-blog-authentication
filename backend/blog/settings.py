@@ -26,7 +26,7 @@ SECRET_KEY = "django-insecure-!*w04wc4f32n=8$(o)!^1914txbge94g)oq-$443llpd(%l#3r
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["0.0.0.0", "127.0.0.1", "localhost"]
 
 
 # Application definition
@@ -98,12 +98,14 @@ WSGI_APPLICATION = "blog.wsgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.mysql",
+        # "ENGINE": "django.db.backends.mysql",
+        "ENGINE": "mysql.connector.django",
         "NAME": config("MYSQL_DATABASE", default="blog"),
         "USER": config("MYSQL_USER", default="mohamed"),
         "PASSWORD": config("MYSQL_PASSWORD", "mysql"),
         "HOST": config("MYSQL_DB_HOST", default="127.0.0.1"),
         "PORT": config("MYSQL_DB_PORT", default="3306"),
+        "OPTIONS": {"auth_plugin": "mysql_native_password"},
     }
 }
 
@@ -198,3 +200,5 @@ EMAIL_HOST_USER = ""
 EMAIL_HOST_PASSWORD = ""
 # EMAIL_USE_TLS = config("EMAIL_USE_TLS", default=True, cast=bool)
 # DEFAULT_FROM_EMAIL = "mohamed@blog.com"
+
+print("test")

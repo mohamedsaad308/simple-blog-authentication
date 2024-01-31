@@ -17,9 +17,9 @@ services:
 
   api:
     &api
+    platform: linux/amd64
     build:
       context: ./backend 
-    command: ["sh", "/app/docker-entrypoint.sh"]
     env_file:
       - .env
     ports:
@@ -29,17 +29,17 @@ services:
       - redis
     restart: on-failure
     volumes:
-      - ./backend:/app
+      - ./backend:/home/blog
+      - ./backend/storage:/storage
 
   celeryworker:
     <<: *api
-    build:
-      context: ./backend
-    command: celery -A blog worker --loglevel=info
-    ports:
-      - "8001:8000" 
+    ports: []
+    command: bash -c "poetry run celery -A blog worker -l info"
     environment:
       - CELERY=true
+    depends_on:
+      - api
     volumes:
       - ./backend:/app
 
@@ -51,7 +51,7 @@ services:
     build:
       context: client
     volumes:
-      - ./frontend:/home/blog
+      - ./client:/home/blog
       - /home/blog/node_modules
     ports:
       - "3000:3000"
