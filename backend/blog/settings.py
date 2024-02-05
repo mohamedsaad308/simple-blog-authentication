@@ -193,7 +193,6 @@ EMAIL_BACKEND = "post_office.EmailBackend"
 POST_OFFICE = {
     "CELERY_ENABLED": True,
 }
-EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST = config("EMAIL_HOST", default="172.23.0.2")
 EMAIL_PORT = 25
 EMAIL_HOST_USER = ""
@@ -201,4 +200,5 @@ EMAIL_HOST_PASSWORD = ""
 # EMAIL_USE_TLS = config("EMAIL_USE_TLS", default=True, cast=bool)
 # DEFAULT_FROM_EMAIL = "mohamed@blog.com"
 
-print("test")
+# Enable django toolbar in compose
+DEBUG_TOOLBAR_CONFIG = {"SHOW_TOOLBAR_CALLBACK": lambda request: True}
