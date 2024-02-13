@@ -1,14 +1,15 @@
-import MainNavigation from "./MainNavigation";
+import React from "react";
+import Navbar from "./Navbar";
+import Footer from "./Footer";
 
-function Layout(props) {
+const Layout = ({ children }) => {
   return (
     <div>
-      <main className="container">
-        <MainNavigation />
-        {props.children}
-      </main>
+      <Navbar />
+      {children}
+      <Footer />
     </div>
   );
-}
+};
 
 export default Layout;
