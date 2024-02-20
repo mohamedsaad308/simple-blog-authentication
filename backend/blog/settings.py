@@ -43,8 +43,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "djoser",
     "debug_toolbar",
-    "core",
-    "post_office",
+    "core"
 ]
 
 MIDDLEWARE = [
@@ -186,14 +185,8 @@ DJOSER = {
 # Celery Configuration
 CELERY_BROKER_URL = config("REDIS_URL", default="redis://127.0.0.1:6379/0")
 
-# Email Configuration
-EMAIL_BACKEND = "post_office.EmailBackend"
 
-# Put this in settings.py
-POST_OFFICE = {
-    "CELERY_ENABLED": True,
-}
-EMAIL_HOST = config("EMAIL_HOST", default="172.23.0.2")
+EMAIL_HOST = config("EMAIL_HOST", default="172.23.0.5")
 EMAIL_PORT = 25
 EMAIL_HOST_USER = ""
 EMAIL_HOST_PASSWORD = ""
