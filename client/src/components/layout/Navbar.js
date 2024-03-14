@@ -23,6 +23,11 @@ const Navbar = () => {
             About
           </Button>
         </Link>
+        <Link to="/register" style={{ textDecoration: "none" }}>
+          <Button variant={location.pathname === "/register" ? "solid" : "ghost"} mr={4}>
+            Register
+          </Button>
+        </Link>
         <Link to="/login" style={{ textDecoration: "none" }}>
           <Button variant={location.pathname === "/login" ? "solid" : "ghost"} mr={4}>
             Login

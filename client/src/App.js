@@ -5,7 +5,8 @@ import "./App.css";
 import Layout from "./components/layout/Layout";
 import Home from "./components/Home";
 import LoginForm from "./components/users/LoginForm";
-import RegistrationForm from "./components/users/RegistrationForm";
+import RegisterForm from "./components/users/RegisterForm";
+import RegisteredSuccess from "./components/users/RegisteredSuccess";
 
 function App() {
   return (
@@ -13,7 +14,8 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} exact />
         <Route path="/login" element={<LoginForm />} exact />
-        <Route path="/register" element={<RegistrationForm />} exact />
+        <Route path="/register" element={<RegisterForm />} exact />
+        <Route path="/user-registered" element={<RegisteredSuccess />} exact />
       </Routes>
     </Layout>
   );
