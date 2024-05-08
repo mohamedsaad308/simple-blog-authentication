@@ -1,9 +1,7 @@
-version: "3"
-
 networks:
   default:
-    external:
-      name: blog-network
+    external: true
+    name: blog-network
 
 services:
   db:
@@ -60,7 +58,7 @@ services:
       - .env
 
   smtp4dev:
-    image: rnwood/smtp4dev:v3
+    image: rnwood/smtp4dev:linux-amd64-3.6.0-ci20240506101
     ports:
       - 5000:80
       - 25:25

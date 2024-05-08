@@ -23,3 +23,7 @@ export const useRegisterUser = (userData) => {
 export const resendActivationEmail = (email) => {
   return axios.post(`${API_URL}/auth/users/resend_activation/`, email);
 }
+
+export const activateUser = (activationData) => {
+  return axios.post(`${API_URL}/auth/users/resend_activation/`, activationData)
+}
