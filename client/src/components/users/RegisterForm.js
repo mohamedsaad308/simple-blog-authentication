@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { Box, Button, Card, FormControl, FormErrorMessage, FormLabel, Input, VStack } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom"; // Assuming you are using React Router for navigation
@@ -14,7 +14,9 @@ const RegisterForm = () => {
     watch,
     setError,
   } = useForm();
-
+  useEffect(() => {
+    document.title = "Register";
+  }, []);
   const mutation = useMutation({
     mutationFn: useRegisterUser,
     onSuccess: () => {
@@ -53,8 +55,6 @@ const RegisterForm = () => {
   const onSubmit = (data) => {
     mutation.mutate(data); // Make the API call
   };
-
-
 
   return (
     <Card maxWidth="500px" margin="auto">

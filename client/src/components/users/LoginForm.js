@@ -1,86 +1,105 @@
-// LoginForm.js
-import React, { useState } from "react";
-// import axios from "axios";
-import { Link } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useForm } from "react-hook-form";
+import {
+  Box,
+  Button,
+  Card,
+  FormControl,
+  FormErrorMessage,
+  FormLabel,
+  Input,
+  VStack,
+  Text,
+  Link,
+} from "@chakra-ui/react";
+import { useNavigate } from "react-router-dom";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { toast } from "react-toastify";
+import { useLoginUser } from "../../api/auth";
 
 const LoginForm = () => {
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm();
+
+  const navigate = useNavigate();
+  const [serverError, setServerError] = useState(null);
+  const queryClient = useQueryClient();
+  useEffect(() => {
+    document.title = "Login";
+  }, []);
+  const mutation = useMutation({
+    mutationFn: useLoginUser,
+    onSuccess: (data) => {
+      const { access, refresh } = data.data;
+      queryClient.setQueryData("authTokens", { access, refresh });
+      localStorage.setItem("accessToken", access);
+      localStorage.setItem("refreshToken", refresh);
+      const expirationTime = 4.5 * 24 * 60 * 60 * 1000;
+
+      setTimeout(() => {
+        queryClient.setQueryData("authTokens", null);
+        localStorage.removeItem("accessToken");
+        localStorage.removeItem("refreshToken");
+      }, expirationTime);
+
+      toast.success("Log in Successful!");
+      navigate("/");
+    },
+    onError: (error) => {
+      console.log(error);
+      setServerError("No active account found with the given credentials!");
+      toast.error("No active account found with the given credentials!");
+    },
   });
 
-  const [errorMessage, setErrorMessage] = useState(null);
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    try {
-      // const response = await axios.post("YOUR_API_ENDPOINT/login/", formData);
-      // Handle successful login, e.g., set user state or redirect
-      setErrorMessage(null);
-    } catch (error) {
-      setErrorMessage("Login failed. Please check your email and password.");
-    }
+  const onSubmit = (data) => {
+    mutation.mutate(data);
   };
 
   return (
-    <div id="login-container" className="container">
-      <h2>Login</h2>
-      {errorMessage && (
-        <div id="login-alert" className="alert alert-danger">
-          {errorMessage}
-        </div>
-      )}
-      <form id="login-form" onSubmit={handleSubmit}>
-        <div className="mb-3">
-          <label htmlFor="email" className="form-label">
-            Email
-          </label>
-          <input
-            type="email"
-            className="form-control"
-            id="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            required
-          />
-        </div>
-        <div className="mb-3">
-          <label htmlFor="password" className="form-label">
-            Password
-          </label>
-          <input
-            type="password"
-            className="form-control"
-            id="password"
-            name="password"
-            value={formData.password}
-            onChange={handleChange}
-            required
-          />
-        </div>
-        <button type="submit" className="btn btn-primary">
-          Login
-        </button>
-      </form>
-
-      <hr />
-
-      <div>
-        <p>
-          Not a user? <Link to="/register">Register here</Link>
-        </p>
-        <p>
-          Forgot your password? <Link to="/forgot-password">Reset Password</Link>
-        </p>
-      </div>
-    </div>
+    <Card maxWidth="500px" margin="auto">
+      <Box padding="4">
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <VStack spacing={4}>
+            <FormControl isInvalid={errors.email}>
+              <FormLabel htmlFor="email">Email</FormLabel>
+              <Input type="email" id="email" {...register("email", { required: "Email is required" })} size="lg" />
+              <FormErrorMessage>{errors.email && errors.email.message}</FormErrorMessage>
+            </FormControl>
+            <FormControl isInvalid={errors.password}>
+              <FormLabel htmlFor="password">Password</FormLabel>
+              <Input
+                type="password"
+                id="password"
+                {...register("password", {
+                  required: "Password is required",
+                })}
+                size="lg"
+              />
+              <FormErrorMessage>{errors.password && errors.password.message}</FormErrorMessage>
+            </FormControl>
+            <Button type="submit" isLoading={isSubmitting || mutation.isLoading} size="lg">
+              Login
+            </Button>
+            {serverError && <Text color="red.500">Error: {serverError}</Text>}
+          </VStack>
+        </form>
+        <VStack spacing={2} mt={4}>
+          <Link color="blue.500" onClick={() => navigate("/forgot-password")}>
+            Forgot Password?
+          </Link>
+          <Text>
+            Don't have an account?{" "}
+            <Link color="blue.500" onClick={() => navigate("/register")}>
+              Register
+            </Link>
+          </Text>
+        </VStack>
+      </Box>
+    </Card>
   );
 };
 

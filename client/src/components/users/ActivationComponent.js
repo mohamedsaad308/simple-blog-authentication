@@ -1,51 +1,52 @@
 import React, { useState, useEffect } from "react";
+import { Box, Heading, Text } from "@chakra-ui/react";
 import { useNavigate, useParams } from "react-router-dom";
 import { activateUser } from "../../api/auth";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 
 const ActivationComponent = () => {
-    console.log("here")
-  const history = useNavigate();
+  const navigate = useNavigate();
   const [activationStatus, setActivationStatus] = useState(null);
-    const { uid, token } = useParams();
+  const { uid, token } = useParams();
   const mutation = useMutation({
     mutationFn: activateUser,
     onSuccess: () => {
       setActivationStatus("success");
-      setActivationStatus("success");
-      toast("Activated, redirect to login");
+      toast.success("Activated, redirect to login");
       // Redirect to login page
       setTimeout(() => {
-        history.push("/login");
+        navigate("/login");
       }, 3000);
     },
     onError: (error) => {
-      toast("Something went wrong, resend activation");
+      toast.error("Something went wrong, resend activation");
       setTimeout(() => {
-        history.push("/user-registered");
+        navigate("/activation-failed");
       }, 3000);
     },
   });
 
   useEffect(() => {
-    // Function to handle activation process
-    mutation.mutate(JSON.stringify({ uid, token }));
-
+    document.title = "Activating .....";
+    mutation.mutate({ uid: uid, token: token });
   }, []);
 
-
   return (
-    <div>
+    <Box maxWidth="500px" margin="auto" textAlign="center">
       {activationStatus === "success" && (
         <div>
-          <h2>User activated successfully!</h2>
-          <p>Redirecting to login page...</p>
+          <Text mb="4">User activated successfully!</Text>
+          <Text mb="4">Redirecting to login page...</Text>
         </div>
       )}
 
-      {activationStatus === null && <p>Activating user...</p>}
-    </div>
+      {activationStatus === null && (
+        <Heading as="h2" size="lg" mt="8" mb="4">
+          Activating.......
+        </Heading>
+      )}
+    </Box>
   );
 };
 
