@@ -13,7 +13,7 @@ import {
   Link,
 } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import { useLoginUser } from "../../api/auth";
 
@@ -26,7 +26,6 @@ const LoginForm = () => {
 
   const navigate = useNavigate();
   const [serverError, setServerError] = useState(null);
-  const queryClient = useQueryClient();
   useEffect(() => {
     document.title = "Login";
   }, []);
@@ -34,19 +33,18 @@ const LoginForm = () => {
     mutationFn: useLoginUser,
     onSuccess: (data) => {
       const { access, refresh } = data.data;
-      queryClient.setQueryData("authTokens", { access, refresh });
       localStorage.setItem("accessToken", access);
       localStorage.setItem("refreshToken", refresh);
       const expirationTime = 4.5 * 24 * 60 * 60 * 1000;
 
       setTimeout(() => {
-        queryClient.setQueryData("authTokens", null);
         localStorage.removeItem("accessToken");
         localStorage.removeItem("refreshToken");
       }, expirationTime);
 
       toast.success("Log in Successful!");
       navigate("/");
+      // window.location.href = "/";
     },
     onError: (error) => {
       console.log(error);

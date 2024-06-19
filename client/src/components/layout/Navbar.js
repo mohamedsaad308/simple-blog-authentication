@@ -1,25 +1,17 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Flex, Box, Text, Button } from "@chakra-ui/react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { useQueryClient } from "@tanstack/react-query";
-import { useAuthTokens } from "../hooks";
 
 const Navbar = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const queryClient = useQueryClient();
-  const tokens = useAuthTokens();
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-  useEffect(() => {
-    setIsLoggedIn(!!tokens?.access); // Update the logged-in state based on the presence of the access token
-  }, [tokens]);
+  const isLoggedIn = !!localStorage.getItem("accessToken");
 
   const handleLogout = () => {
     localStorage.removeItem("accessToken");
     localStorage.removeItem("refreshToken");
-    queryClient.setQueryData("authTokens", null);
-    setIsLoggedIn(false);
+
     navigate("/login");
   };
 
